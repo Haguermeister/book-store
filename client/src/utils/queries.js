@@ -1,6 +1,6 @@
 import { gql } from "@apollo/client";
 
-export const GET_ME = gql`
+export const GET_MYSELF = gql`
   {
     me {
       _id
@@ -9,11 +9,12 @@ export const GET_ME = gql`
       bookCount
       savedBooks {
         bookId
-        image
         link
+
         authors
         description
         title
+        image
       }
     }
   }

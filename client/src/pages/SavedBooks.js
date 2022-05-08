@@ -1,6 +1,6 @@
 import React from "react";
 import { removeBookId } from "../utils/localStorage";
-import { GET_ME } from "../utils/queries";
+import { GET_MYSELF } from "../utils/queries";
 import { DELETE_BOOK } from "../utils/mutations";
 import {
   Jumbotron,
@@ -16,7 +16,7 @@ import Auth from "../utils/auth";
 const SavedBooks = () => {
   const [deleteBook] = useMutation(DELETE_BOOK);
 
-  const { loading, data } = useQuery(GET_ME);
+  const { loading, data } = useQuery(GET_MYSELF);
   const userData = data?.me || { savedBooks: [] };
 
   const handleDeleteBook = async (bookId) => {
