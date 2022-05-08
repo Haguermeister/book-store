@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { useMutation } from "@apollo/client";
-
+import { saveBookIds, getSavedBookIds } from "../utils/localStorage";
 import { SAVED_BOOK } from "../utils/mutations";
+import { useMutation } from "@apollo/client";
 import {
   Jumbotron,
   Container,
@@ -14,14 +14,14 @@ import {
 
 import Auth from "../utils/auth";
 import { searchGoogleBooks } from "../utils/API";
-import { saveBookIds, getSavedBookIds } from "../utils/localStorage";
 
 const SearchBooks = () => {
+  const [savedBook] = useMutation(SAVED_BOOK);
+
   const [searchedBooks, setSearchedBooks] = useState([]);
   const [searchInput, setSearchInput] = useState("");
 
   const [savedBookIds, setSavedBookIds] = useState(getSavedBookIds());
-  const [saveBook] = useMutation(SAVED_BOOK);
 
   useEffect(() => {
     return () => saveBookIds(savedBookIds);
@@ -44,10 +44,10 @@ const SearchBooks = () => {
       const { items } = await response.json();
 
       const bookData = items.map((book) => ({
-        BookId: book.id,
-        Authors: book.volumeInfo.Authors || ["No author to display"],
+        bookId: book.id,
+        authors: book.volumeInfo.authors || ["No author to display"],
         title: book.volumeInfo.title,
-        Description: book.volumeInfo.Description,
+        description: book.volumeInfo.description,
         image: book.volumeInfo.imageLinks?.thumbnail || "",
         link: book.volumeInfo.infoLink,
       }));
@@ -59,8 +59,8 @@ const SearchBooks = () => {
     }
   };
 
-  const handleSaveBook = async (BookId) => {
-    const bookToSave = searchedBooks.find((book) => book.BookId === BookId);
+  const handleSaveBook = async (bookId) => {
+    const bookToSave = searchedBooks.find((book) => book.bookId === bookId);
 
     const token = Auth.loggedIn() ? Auth.getToken() : null;
 
@@ -69,7 +69,7 @@ const SearchBooks = () => {
     }
 
     try {
-      const response = await saveBook({
+      const response = await savedBook({
         variables: {
           input: bookToSave,
         },
@@ -79,7 +79,7 @@ const SearchBooks = () => {
         throw new Error("something went wrong!");
       }
 
-      setSavedBookIds([...savedBookIds, bookToSave.BookId]);
+      setSavedBookIds([...savedBookIds, bookToSave.bookId]);
     } catch (err) {
       console.error(err);
     }
@@ -121,7 +121,7 @@ const SearchBooks = () => {
         <CardColumns>
           {searchedBooks.map((book) => {
             return (
-              <Card key={book.BookId} border="dark" bg="light">
+              <Card key={book.bookId} border="dark" bg="light">
                 {book.image ? (
                   <Card.Img
                     src={book.image}
@@ -132,19 +132,19 @@ const SearchBooks = () => {
                 ) : null}
                 <Card.Body>
                   <Card.Title>{book.title}</Card.Title>
-                  <p className="small">Author: {book.Authors}</p>
-                  <Card.Text>{book.Description}</Card.Text>
+                  <p className="small">Author: {book.authors}</p>
+                  <Card.Text>{book.description}</Card.Text>
                   <Card.Link href={book.link}>Google Books</Card.Link>
                   {Auth.loggedIn() && (
                     <Button
                       disabled={savedBookIds?.some(
-                        (savedBookId) => savedBookId === book.BookId
+                        (savedBookId) => savedBookId === book.bookId
                       )}
                       className="btn-block btn-info"
-                      onClick={() => handleSaveBook(book.BookId)}
+                      onClick={() => handleSaveBook(book.bookId)}
                     >
                       {savedBookIds?.some(
-                        (savedBookId) => savedBookId === book.BookId
+                        (savedBookId) => savedBookId === book.bookId
                       )
                         ? "This book has been saved!"
                         : "Save this Book!"}

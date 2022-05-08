@@ -1,5 +1,5 @@
 export const getMe = (token) => {
-  return fetch("/api/users/myself", {
+  return fetch("/api/users/me", {
     headers: {
       "Content-Type": "application/json",
       authorization: `Bearer ${token}`,
@@ -27,7 +27,7 @@ export const loginUser = (userData) => {
   });
 };
 
-export const saveBook = (bookData, token) => {
+export const savedBook = (bookData, token) => {
   return fetch("/api/users", {
     method: "PUT",
     headers: {
@@ -38,8 +38,8 @@ export const saveBook = (bookData, token) => {
   });
 };
 
-export const DeleteBooks = (BookId, token) => {
-  return fetch(`/api/users/books/${BookId}`, {
+export const deleteBook = (bookId, token) => {
+  return fetch(`/api/users/books/${bookId}`, {
     method: "DELETE",
     headers: {
       authorization: `Bearer ${token}`,

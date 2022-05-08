@@ -1,11 +1,11 @@
 const { Schema } = require("mongoose");
 
 const bookSchema = new Schema({
-  BookId: {
+  bookId: {
     type: String,
     required: true,
   },
-  Authors: [
+  authors: [
     {
       type: String,
     },
@@ -14,7 +14,7 @@ const bookSchema = new Schema({
     type: String,
     required: true,
   },
-  Description: {
+  description: {
     type: String,
     required: true,
   },

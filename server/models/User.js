@@ -5,7 +5,7 @@ const bookSchema = require("./Book");
 
 const userSchema = new Schema(
   {
-    Username: {
+    username: {
       type: String,
       required: true,
       unique: true,
@@ -20,7 +20,7 @@ const userSchema = new Schema(
       type: String,
       required: true,
     },
-    SavedBooks: [bookSchema],
+    savedBooks: [bookSchema],
   },
   {
     toJSON: {
@@ -43,7 +43,7 @@ userSchema.methods.isCorrectPassword = async function (password) {
 };
 
 userSchema.virtual("bookCount").get(function () {
-  return this.SavedBooks.length;
+  return this.savedBooks.length;
 });
 
 const User = model("User", userSchema);

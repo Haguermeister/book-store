@@ -1,20 +1,21 @@
 import React, { useState } from "react";
+import { ADD_USER } from "../utils/mutations";
+
 import { Form, Button, Alert } from "react-bootstrap";
 import { useMutation } from "@apollo/client";
 
 import Auth from "../utils/auth";
-import { ADDS_USER } from "../utils/mutations";
 
 const SignupForm = () => {
+  const [addUsers] = useMutation(ADD_USER);
+
   const [userFormData, setUserFormData] = useState({
-    Username: "",
+    username: "",
     email: "",
     password: "",
   });
   const [validated] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
-
-  const [AddUser] = useMutation(ADDS_USER);
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -31,17 +32,17 @@ const SignupForm = () => {
     }
 
     try {
-      const { data } = await AddUser({
+      const { data } = await addUsers({
         variables: { ...userFormData },
       });
-      Auth.login(data.AddUser.token);
+      Auth.login(data.addUsers.token);
     } catch (err) {
       console.error(err);
       setShowAlert(true);
     }
 
     setUserFormData({
-      Username: "",
+      username: "",
       email: "",
       password: "",
     });
@@ -60,13 +61,13 @@ const SignupForm = () => {
         </Alert>
 
         <Form.Group>
-          <Form.Label htmlFor="Username">Username</Form.Label>
+          <Form.Label htmlFor="username">Username</Form.Label>
           <Form.Control
             type="text"
-            placeholder="Your Username"
-            name="Username"
+            placeholder="Your username"
+            name="username"
             onChange={handleInputChange}
-            value={userFormData.Username}
+            value={userFormData.username}
             required
           />
           <Form.Control.Feedback type="invalid">
@@ -106,7 +107,7 @@ const SignupForm = () => {
         <Button
           disabled={
             !(
-              userFormData.Username &&
+              userFormData.username &&
               userFormData.email &&
               userFormData.password
             )
